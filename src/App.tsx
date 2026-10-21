@@ -7,21 +7,23 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 const concepts = {
-  architectural: { name:"Architectural", theme:"architecture", kicker:"PROFESSIONAL DUCT CLEANING", title:"See what’s inside your air ducts.", desc:"Focused air-duct cleaning for homes and workplaces. See the work, understand the scope, and know what happens next.", hero:"/air-duct-cleaning/architectural/images/hero.webp", about:"Cleaning the parts of your ventilation system you cannot see.", accent:"INSIDE THE DUCT", intro:"Airduct focuses on accessible ductwork, registers and the agreed cleaning scope—not unrelated HVAC repairs." },
+  architectural: { name:"Architectural", theme:"architecture", kicker:"PROFESSIONAL DUCT CLEANING", title:"See what’s inside your air ducts.", desc:"Focused air-duct cleaning for homes and workplaces. See the work, understand the scope, and know what happens next.", hero:`${base}/images/hero.webp`, about:"Cleaning the parts of your ventilation system you cannot see.", accent:"INSIDE THE DUCT", intro:"Airduct focuses on accessible ductwork, registers and the agreed cleaning scope—not unrelated HVAC repairs." },
 } as const;
 type Key = keyof typeof concepts;
 const processImages: Record<Key, [string, string, string]> = {
  "architectural": [
-  "/air-duct-cleaning/architectural/images/process-1.webp",
-  "/air-duct-cleaning/architectural/images/process-2.webp",
-  "/air-duct-cleaning/architectural/images/process-3.webp"
+  `${base}/images/process-1.webp`,
+  `${base}/images/process-2.webp`,
+  `${base}/images/process-3.webp`
  ]
 };
 const visualAssets: Record<Key,{about:string;matter:string;why:string;services:[string,string,string]}> = {
- "architectural":{about:"/air-duct-cleaning/architectural/images/about.png",matter:"/air-duct-cleaning/architectural/images/matter-system.webp",why:"/air-duct-cleaning/architectural/images/why.webp",services:["/air-duct-cleaning/architectural/images/service-residential.webp","/air-duct-cleaning/architectural/images/service-commercial.webp","/air-duct-cleaning/architectural/images/service-enquiries.jpeg"]}
+ "architectural":{about:`${base}/images/about.png`,matter:`${base}/images/matter-system.webp`,why:`${base}/images/why.webp`,services:[`${base}/images/service-residential.webp`,`${base}/images/service-commercial.webp`,`${base}/images/service-enquiries.jpeg`]}
 };
-const comparisonImage = "/air-duct-cleaning/architectural/images/comparison.png";
+const comparisonImage = `${base}/images/comparison.png`;
 const services = [
  {title:"Residential air-duct cleaning",text:"Cleaning accessible supply and return ductwork, registers and related components within the agreed scope.",tag:"FOR THE HOME",icon:House},
  {title:"Commercial ventilation care",text:"Duct cleaning planned around the building, access requirements and agreed areas of work.",tag:"FOR WORKPLACES",icon:Building2},

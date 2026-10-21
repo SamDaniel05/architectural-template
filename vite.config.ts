@@ -1,3 +1,3 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-export default defineConfig({ base: "/air-duct-cleaning/architectural/", plugins: [react()] });
+export default defineConfig({ base: "/architectural-template/", plugins: [react()] });
