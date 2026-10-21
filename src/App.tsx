@@ -5,7 +5,8 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+ gsap.registerPlugin(ScrollTrigger, useGSAP);
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -48,62 +49,78 @@ function App(){
  const handleImageError=(event:SyntheticEvent<HTMLImageElement>)=>{const image=event.currentTarget;image.onerror=null;image.style.visibility="hidden";};
  useEffect(()=>{document.documentElement.dataset.theme=c.theme;document.title="Airduct — "+c.name;window.scrollTo({top:0,behavior:"auto"});setMenu(false);},[key,c]);
  useGSAP(()=>{
-  gsap.utils.toArray<HTMLElement>(".reveal:not(.service-card):not(.process-step)").forEach((el)=>{
-   gsap.fromTo(el,{y:18,autoAlpha:0},{y:0,autoAlpha:1,duration:.65,ease:"power2.out",scrollTrigger:{trigger:el,start:"top 92%",once:true}});
+  const mm = gsap.matchMedia();
+
+  // Desktop only: pinned vertical services stage and horizontal process stages
+  mm.add("(min-width: 1025px) and (prefers-reduced-motion: no-preference)",()=>{
+   // Services: pin layout on desktop and move each service card vertically bottom-to-top.
+   const servicesLayout=document.querySelector<HTMLElement>("#services .services-feature-layout");
+   const serviceGrid=servicesLayout?.querySelector<HTMLElement>(".service-grid");
+   const serviceCards=servicesLayout?gsap.utils.toArray<HTMLElement>(".service-card",servicesLayout):[];
+   if(servicesLayout&&serviceGrid&&serviceCards.length>=2){
+    gsap.set(serviceCards,{yPercent:115,autoAlpha:0});
+    gsap.set(serviceCards[0],{yPercent:0,autoAlpha:1});
+    const serviceTl=gsap.timeline({
+     scrollTrigger:{
+      trigger:servicesLayout,
+      start:"top 108px",
+      end:()=>"+="+Math.round(window.innerHeight*(serviceCards.length-1)*1.08),
+      scrub:0.62,
+      pin:true,
+      anticipatePin:1,
+      invalidateOnRefresh:true
+     }
+    });
+    serviceCards.forEach((card,index)=>{
+     if(index===0)return;
+     serviceTl
+       .to(serviceCards[index-1],{yPercent:-115,autoAlpha:0,duration:1,ease:"none"},index-1)
+       .fromTo(card,{yPercent:115,autoAlpha:0},{yPercent:0,autoAlpha:1,duration:1,ease:"none"},index-1);
+    });
+   }
+
+   // How it works: pin the story on desktop and move each complete stage right-to-left.
+   const processStory=document.querySelector<HTMLElement>("#process .process-story");
+   const processGrid=processStory?.querySelector<HTMLElement>(".process-grid");
+   const processCards=processStory?gsap.utils.toArray<HTMLElement>(".process-step",processStory):[];
+   if(processStory&&processGrid&&processCards.length>=2){
+    gsap.set(processCards,{xPercent:112,autoAlpha:0});
+    gsap.set(processCards[0],{xPercent:0,autoAlpha:1});
+    const processTl=gsap.timeline({
+     scrollTrigger:{
+      trigger:processStory,
+      start:"top 108px",
+      end:()=>"+="+Math.round(window.innerHeight*(processCards.length-1)*1.08),
+      scrub:0.62,
+      pin:true,
+      anticipatePin:1,
+      invalidateOnRefresh:true
+     }
+    });
+    processCards.forEach((card,index)=>{
+     if(index===0)return;
+     processTl
+       .to(processCards[index-1],{xPercent:-112,autoAlpha:0,duration:1,ease:"none"},index-1)
+       .fromTo(card,{xPercent:112,autoAlpha:0},{xPercent:0,autoAlpha:1,duration:1,ease:"none"},index-1);
+    });
+   }
   });
-  // Services: pin the layout on desktop and move each service card vertically bottom-to-top.
-  const servicesLayout=document.querySelector<HTMLElement>("#services .services-feature-layout");
-  const serviceGrid=servicesLayout?.querySelector<HTMLElement>(".service-grid");
-  const serviceCards=servicesLayout?gsap.utils.toArray<HTMLElement>(".service-card",servicesLayout):[];
-  const desktopLayout=window.matchMedia("(min-width: 1025px)").matches;
-  const reducedMotion=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(servicesLayout&&serviceGrid&&serviceCards.length>=2&&desktopLayout&&!reducedMotion){
-   gsap.set(serviceCards,{yPercent:115,autoAlpha:0});
-   gsap.set(serviceCards[0],{yPercent:0,autoAlpha:1});
-   const serviceTl=gsap.timeline({
-    scrollTrigger:{
-     trigger:servicesLayout,
-     start:"top 108px",
-     end:()=>"+="+Math.round(window.innerHeight*(serviceCards.length-1)*1.08),
-     scrub:0.62,
-     pin:true,
-     anticipatePin:1,
-     invalidateOnRefresh:true
-    }
-   });
-   serviceCards.forEach((card,index)=>{
-    if(index===0)return;
-    serviceTl
-      .to(serviceCards[index-1],{yPercent:-115,autoAlpha:0,duration:1,ease:"none"},index-1)
-      .fromTo(card,{yPercent:115,autoAlpha:0},{yPercent:0,autoAlpha:1,duration:1,ease:"none"},index-1);
-   });
-  } else if(serviceGrid&&serviceCards.length&&!reducedMotion){
-   gsap.fromTo(serviceCards,{y:24,autoAlpha:0},{y:0,autoAlpha:1,duration:.62,stagger:.12,ease:"power2.out",scrollTrigger:{trigger:serviceGrid,start:"top 84%",once:true}});
-  }
-  // How it works: pin the story on desktop and move each complete stage right-to-left.
-  const processStory=document.querySelector<HTMLElement>("#process .process-story");
-  const processGrid=processStory?.querySelector<HTMLElement>(".process-grid");
-  const processCards=processStory?gsap.utils.toArray<HTMLElement>(".process-step",processStory):[];
-  const desktopStory=window.matchMedia("(min-width: 1025px)").matches;
-  if(processStory&&processGrid&&processCards.length>=2&&desktopStory&&!reducedMotion){
-   gsap.set(processCards,{xPercent:112,autoAlpha:0});
-   gsap.set(processCards[0],{xPercent:0,autoAlpha:1});
-   const processTl=gsap.timeline({scrollTrigger:{trigger:processStory,start:"top 108px",end:()=>"+="+Math.round(window.innerHeight*(processCards.length-1)*1.08),scrub:0.62,pin:true,anticipatePin:1,invalidateOnRefresh:true}});
-   processCards.forEach((card,index)=>{
-    if(index===0)return;
-    processTl.to(processCards[index-1],{xPercent:-112,autoAlpha:0,duration:1,ease:"none"},index-1)
-      .fromTo(card,{xPercent:112,autoAlpha:0},{xPercent:0,autoAlpha:1,duration:1,ease:"none"},index-1);
-   });
-  }
-  const comparison=document.querySelector<HTMLElement>(".comparison-section");
-  const photo=document.querySelector<HTMLElement>(".comparison-before");
-  const handle=document.querySelector<HTMLElement>(".comparison-handle");
-  if(comparison&&photo&&handle&&window.matchMedia("(min-width: 901px)").matches&&!window.matchMedia("(prefers-reduced-motion: reduce)").matches){
-   gsap.set(photo,{clipPath:"inset(0 0 0 0)"});
-   gsap.set(handle,{left:"0%"});
-   gsap.to(photo,{clipPath:"inset(0 0 0 100%)",ease:"none",scrollTrigger:{trigger:comparison,start:"top top",end:()=>"+="+Math.round(window.innerHeight*1.15),scrub:0.35,pin:true,anticipatePin:1,invalidateOnRefresh:true}});
-   gsap.to(handle,{left:"100%",ease:"none",scrollTrigger:{trigger:comparison,start:"top top",end:()=>"+="+Math.round(window.innerHeight*1.15),scrub:0.35,invalidateOnRefresh:true}});
-  } else if(photo&&handle){gsap.set(photo,{clipPath:"inset(0 0 0 100%)"});gsap.set(handle,{display:"none"});}
+
+  // Mobile / Tablet / Reduced Motion: completely static, clear any GSAP inline styles
+  mm.add("(max-width: 1024px), (prefers-reduced-motion: reduce)",()=>{
+   const staticTargets=gsap.utils.toArray<HTMLElement>(
+    "#services .services-feature-layout, #services .service-stage-window, #services .service-grid, #services .service-card, "+
+    "#process .process-story, #process .process-stage-window, #process .process-grid, #process .process-step"
+   );
+   gsap.set(staticTargets,{clearProps:"all"});
+  });
+
+  // General subtle reveal for narrative text and headlines across the site
+  gsap.utils.toArray<HTMLElement>(".reveal:not(.service-card):not(.process-step)").forEach((el)=>{
+   gsap.fromTo(el,{y:16,autoAlpha:0},{y:0,autoAlpha:1,duration:.58,ease:"power2.out",scrollTrigger:{trigger:el,start:"top 94%",once:true}});
+  });
+
+  return ()=>mm.revert();
  },{dependencies:[key],revertOnUpdate:true});
  return <div className={"site theme-"+c.theme}>
   <header className="header"><a className="brand" href="#home" aria-label="Airduct home"><span className="brand-mark"><AirductMark/></span><span className="brand-name">AIRDUCT<small>VENTILATION CARE</small></span></a><nav className={menu?"nav open":"nav"}>{nav.map(([label,id])=><a key={id} href={"#"+id} onClick={()=>setMenu(false)}>{label}</a>)}<a className="nav-cta" href="#contact">Request an estimate <ArrowUpRight size={16}/></a><a className="nav-phone" href="tel:+61491570156" aria-label="Call Airduct on 0491 570 156">0491 570 156</a></nav><a className="mobile-call" href="tel:+61491570156" aria-label="Call Airduct on 0491 570 156">Call <span>0491 570 156</span></a><a className="mobile-estimate" href="#contact">Estimate <ArrowUpRight size={16}/></a><button className="menu-button" onClick={()=>setMenu(!menu)} aria-label={menu?"Close navigation":"Open navigation"}>{menu?<X/>:<Menu/>}</button></header>

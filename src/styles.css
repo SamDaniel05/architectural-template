@@ -443,8 +443,8 @@
  width:100%;max-width:46ch;margin:0;font-size:clamp(14px,1.08vw,16px);
  line-height:1.85;overflow-wrap:break-word;
 }
-#services .service-stage-window{position:relative;width:100%;height:clamp(480px,40vw,540px);min-width:0;overflow:hidden}
-#services .service-stage-window .service-grid{display:block!important;position:relative;width:100%;height:100%!important;margin:0}
+#services .service-stage-window{position:relative;width:100%;min-width:0}
+#services .service-stage-window .service-grid{position:relative;width:100%;margin:0}
 #services .service-stage-window .service-card{box-sizing:border-box;min-width:0;min-height:0}
 #services .service-card-image{width:100%;height:clamp(210px,19vw,255px);flex:none;overflow:hidden;position:relative;background:var(--sage)}
 #services .service-card-image img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
@@ -472,8 +472,8 @@
  width:100%;max-width:46ch;margin:0;font-size:clamp(14px,1.08vw,16px);
  line-height:1.85;overflow-wrap:break-word;
 }
-#process .process-stage-window{position:relative;width:100%;height:clamp(440px,38vw,500px);min-width:0;overflow:hidden}
-#process .process-stage-window .process-grid{display:block!important;position:relative;width:100%;height:100%!important;margin:0}
+#process .process-stage-window{position:relative;width:100%;min-width:0}
+#process .process-stage-window .process-grid{position:relative;width:100%;margin:0}
 #process .process-stage-window .process-step{box-sizing:border-box;min-width:0;min-height:0}
 #process .process-visual{width:100%;height:clamp(155px,17vw,215px);margin:14px 0 18px;flex:none;overflow:hidden;background:var(--sage)}
 #process .process-visual img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
@@ -485,43 +485,51 @@
 @media (min-width:1025px) and (prefers-reduced-motion:no-preference){
  #services .services-feature-layout{min-height:clamp(480px,40vw,540px)}
  #services .service-stage-window{height:clamp(480px,40vw,540px);overflow:hidden}
- #services .service-stage-window .service-grid{height:100%!important}
+ #services .service-stage-window .service-grid{display:block!important;height:100%!important}
  #services .service-stage-window .service-card{
   position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
   border:1px solid var(--line);border-top:2px solid var(--accent);background:var(--surface);
   display:flex!important;flex-direction:column;overflow:hidden;
  }
  #process .process-story{min-height:clamp(440px,38vw,500px)}
+ #process .process-stage-window{height:clamp(440px,38vw,500px);overflow:hidden}
+ #process .process-stage-window .process-grid{display:block!important;height:100%!important}
  #process .process-stage-window .process-step{
-  position:absolute;inset:0;width:100%;height:100%;padding:clamp(20px,2.2vw,32px);
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;padding:clamp(20px,2.2vw,32px);
   border:1px solid var(--line);border-top:2px solid var(--accent);background:var(--surface);
-  display:flex;flex-direction:column;overflow:hidden;
+  display:flex!important;flex-direction:column;overflow:hidden;
  }
 }
 
 @media (max-width:1024px),(prefers-reduced-motion:reduce){
  #services .services-feature-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:24px}
  #services .services-feature-layout .services-intro .section-heading{margin:38px 0 4px}
- #services .service-stage-window{height:auto;overflow:visible}
- #services .service-stage-window .service-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;height:auto!important}
- #services .service-stage-window .service-card{
-  position:relative!important;inset:auto!important;width:auto;height:auto!important;
-  border:1px solid var(--line);border-top:2px solid var(--accent);background:var(--surface);
-  display:flex;flex-direction:column;
+ #services .service-stage-window{height:auto!important;overflow:visible!important}
+ #services .service-stage-window .service-grid{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important;height:auto!important;
  }
- #services .service-stage-window .service-card:last-child{grid-column:1/-1}
+ #services .service-stage-window .service-card{
+  position:relative!important;inset:auto!important;width:100%!important;height:auto!important;
+  opacity:1!important;visibility:visible!important;transform:none!important;
+  border:1px solid var(--line);border-top:2px solid var(--accent);background:var(--surface);
+  display:flex!important;flex-direction:column;
+ }
+ #services .service-stage-window .service-card:last-child{grid-column:1/-1!important}
  #services .service-card-image{height:clamp(170px,24vw,245px)}
 
  #process .process-story{display:grid;grid-template-columns:minmax(0,1fr);gap:24px}
  #process .process-intro .section-heading{margin:38px 0 4px}
- #process .process-stage-window{height:auto;overflow:visible}
- #process .process-stage-window .process-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;height:auto}
- #process .process-stage-window .process-step{
-  position:relative!important;inset:auto!important;width:auto;height:auto;padding:22px;
-  border:1px solid var(--line);border-top:2px solid var(--accent);background:var(--surface);
-  display:flex;flex-direction:column;
+ #process .process-stage-window{height:auto!important;overflow:visible!important}
+ #process .process-stage-window .process-grid{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important;height:auto!important;
  }
- #process .process-stage-window .process-step:last-child{grid-column:1/-1}
+ #process .process-stage-window .process-step{
+  position:relative!important;inset:auto!important;width:100%!important;height:auto!important;padding:22px!important;
+  opacity:1!important;visibility:visible!important;transform:none!important;
+  border:1px solid var(--line);border-top:2px solid var(--accent);background:var(--surface);
+  display:flex!important;flex-direction:column;
+ }
+ #process .process-stage-window .process-step:last-child{grid-column:1/-1!important}
  #process .process-visual{height:clamp(170px,24vw,245px)}
 }
 
@@ -529,14 +537,14 @@
  #services .services-feature-layout .services-intro .section-heading{margin:28px 0 0;gap:16px}
  #services .services-feature-layout .services-intro .section-heading h2{font-size:clamp(36px,10vw,50px)}
  #services .services-feature-layout .services-intro .section-heading>p{font-size:14px;line-height:1.75}
- #services .service-stage-window .service-grid{grid-template-columns:minmax(0,1fr)}
- #services .service-stage-window .service-card:last-child{grid-column:auto}
+ #services .service-stage-window .service-grid{grid-template-columns:minmax(0,1fr)!important}
+ #services .service-stage-window .service-card:last-child{grid-column:auto!important}
  #services .service-card-image{height:clamp(185px,54vw,260px)}
 
  #process .process-intro .section-heading{margin:28px 0 0;gap:16px}
  #process .process-intro .section-heading h2{font-size:clamp(36px,10vw,50px)}
- #process .process-stage-window .process-grid{grid-template-columns:minmax(0,1fr)}
- #process .process-stage-window .process-step:last-child{grid-column:auto}
+ #process .process-stage-window .process-grid{grid-template-columns:minmax(0,1fr)!important}
+ #process .process-stage-window .process-step:last-child{grid-column:auto!important}
  #process .process-visual{height:clamp(185px,54vw,260px)}
  #process .process-bottom{align-items:flex-start;flex-direction:column;gap:16px}
 }
